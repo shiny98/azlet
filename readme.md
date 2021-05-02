@@ -1,7 +1,7 @@
 # azlet : Azure lets encrypt library
 
 [![PyPI - License](https://img.shields.io/pypi/l/azlet)](https://pypi.org/project/azlet/)
-[![PyPI](https://img.shields.io/pypi/v/azlet)](https://pypi.org/project/caffoa/)
+[![PyPI](https://img.shields.io/pypi/v/azlet)](https://pypi.org/project/azlet/)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/azlet)
 
 
