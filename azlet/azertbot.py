@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+import logging
 
 import OpenSSL
 import sewer.client
@@ -92,19 +93,19 @@ class AzertBot:
             self.check_exists(domain_name)
         self.create_certificate(domain_name)
 
-    def rotate(self):
+    def rotate(self, threshold: int = 14):
         for props in self.certificate_client.list_properties_of_certificates():
             if not props.enabled:
                 continue
-            print(f"Checking {props.name}")
+            logging.info(f"Checking {props.name}")
             diff = props.expires_on - datetime.now(timezone.utc)
-            print(f"Expires in {diff.days}d. (Threshhold: 14d)")
-            if diff.days > 14:
+            logging.info(f"Expires in {diff.days}d. (Threshold: {threshold}d)")
+            if diff.days > threshold:
                 continue
             cert = self.certificate_client.get_certificate(props.name)
             domain_name = cert.policy.subject.replace("CN=", "")
-            print(f'Checking subject: "{domain_name}" should end with "{self.dns_class.zone}"')
+            logging.info(f'Checking subject: "{domain_name}" should end with "{self.dns_class.zone}"')
             if not str(domain_name).endswith(self.dns_class.zone):
                 continue
-            print(f"Starting renewal ...")
+            logging.info(f"Starting renewal ...")
             self.create_certificate(domain_name=domain_name)

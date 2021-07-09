@@ -18,6 +18,10 @@ def execute():
                         action='store_true',
                         help="Try to create a new certificate even if a certificate already exists in the key vault",
                         required=False)
+    parser.add_argument("--rotation-threshold",
+                        type=int,
+                        default=30,
+                        help="Number of days a rotation should be done before certificate expiration.")
     parser.add_argument("--exclude-cli-credential", type=bool, default=False,
                         help="Whether to exclude the Azure CLI from the credential.")
     parser.add_argument("--exclude-environment-credential", type=bool, default=False,
@@ -43,7 +47,7 @@ def execute():
     bot = AzertBot(keyvault_name=args.keyvault_name, dns_subscription=args.dns_subscription,
                    dns_rg=args.dns_resource_group, zone=args.dns_zone, credential=credential)
     if args.operation == "rotate":
-        bot.rotate()
+        bot.rotate(args.rotation_threshold)
 
     if args.operation == "create":
         if not args.prefix:
