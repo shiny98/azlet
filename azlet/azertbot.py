@@ -1,3 +1,4 @@
+import pem
 import re
 from typing import Optional
 import logging
@@ -49,11 +50,13 @@ class AzertBot:
 
     def store_pfx(self, domain: str, cert: str, key: AcmeKey):
         name = clean_name(domain)
-        cert_pem = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert.encode('utf-8'))
-        key_pey = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, key.to_pem())
+        all_certs = [OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, pem.as_bytes()) for pem in
+                     pem.parse(cert.encode('utf-8'))]
+        key_pem = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, key.to_pem())
         pkcs = OpenSSL.crypto.PKCS12()
-        pkcs.set_privatekey(key_pey)
-        pkcs.set_certificate(cert_pem)
+        pkcs.set_privatekey(key_pem)
+        pkcs.set_certificate(all_certs[0])
+        pkcs.set_ca_certificates(all_certs[1:])
         pfx_cert = pkcs.export()
         self.certificate_client.import_certificate(name, pfx_cert)
 
