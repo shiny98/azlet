@@ -112,3 +112,12 @@ class AzertBot:
                 continue
             logging.info(f"Starting renewal ...")
             self.create_certificate(domain_name=domain_name)
+
+    def rotate_domain(self, prefix: str):
+        domain_name = prefix + '.' + self.dns_class.zone
+        name = clean_name(domain_name)
+        try:
+            cert = self.certificate_client.get_certificate(name)
+            self.create_certificate(domain_name)
+        except:
+            logging.error("Cannot find certificate to renew.")
