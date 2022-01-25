@@ -83,10 +83,7 @@ class AzertBot:
         cert = client.get_certificate()
         key = client.cert_key
 
-        if tags:
-            self.store_pfx(domain_name, cert, key, tags)
-        else:
-            self.store_pfx(domain_name, cert, key)
+        self.store_pfx(domain_name, cert, key, tags)
 
     def check_exists(self, domain_name):
         name = clean_name(domain_name)
@@ -120,10 +117,7 @@ class AzertBot:
                 continue
             logging.info(f"Starting renewal ...")
 
-            if props.tags is not None:
-                self.create_certificate(domain_name=domain_name, tags=props.tags)
-            else:
-                self.create_certificate(domain_name=domain_name)
+            self.create_certificate(domain_name=domain_name, tags=props.tags)
 
     def rotate_domain(self, prefix: str):
         domain_name = prefix + '.' + self.dns_class.zone
