@@ -119,7 +119,11 @@ class AzertBot:
             if not str(domain_name).endswith(self.dns_class.zone):
                 continue
             logging.info(f"Starting renewal ...")
-            self.create_certificate(domain_name=domain_name)
+
+            if props.tags is not None:
+                self.create_certificate(domain_name=domain_name, tags=props.tags)
+            else:
+                self.create_certificate(domain_name=domain_name)
 
     def rotate_domain(self, prefix: str, tags=None):
         domain_name = prefix + '.' + self.dns_class.zone
