@@ -12,7 +12,9 @@ def execute():
     parser.add_argument("--dns-zone", "-d", help="name of the dns-zone")
     parser.add_argument("--dns-subscription", "-s", help="subscription of the dns zone")
     parser.add_argument("--dns-resource-group", "-g", help="resource-group of the dns zone")
-    parser.add_argument("--prefix", "-p", help="name of the certificate prefix (only ofr create operation)",
+    parser.add_argument("--prefix", "-p", help="name of the certificate prefix (only for create operation)",
+                        required=False)
+    parser.add_argument("--tags", "-t", help="tags of the certificate",
                         required=False)
     parser.add_argument("--force-creation",
                         action='store_true',
@@ -52,7 +54,10 @@ def execute():
     if args.operation == "create":
         if not args.prefix:
             parser.error("--prefix is required for command 'create'")
-        bot.create(args.prefix, args.force_creation)
+        if args.tags:
+            bot.create(args.prefix, args.force_creation, args.tags)
+        else:
+            bot.create(args.prefix, args.force_creation)
 
 
 if __name__ == "__main__":
